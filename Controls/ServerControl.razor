@@ -1,0 +1,21 @@
+<p> none routable component </p>
+@status article @DateTime.Now
+<br/>
+<br/>
+<div class="@server.Name" data-status="Server is @(server.IsOnLine ? "online" : "offline")" style="color: @(server.IsOnLine ? "green": "red")">
+    @* string interpolation: *@
+    @* style="@($"color: {(server.IsOnLine ? "green" : "red")}")" *@
+
+    @* example of implicit razor expression *@
+    @server.Name is located in @server.City
+
+    @* example of explicit razor expression *@
+    that is @(server.IsOnLine? "online" : "offline")
+    <br/>
+    @($"this is an example of using string interpolation: color: {(server.IsOnLine ? "green" : "red")} is the style")
+</div>
+
+@code {
+    private Server server = new Server { Name = "Server 1", City = "Miami"};
+    private string status = "Server is offline";
+}

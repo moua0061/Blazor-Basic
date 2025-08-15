@@ -1,0 +1,101 @@
+@page "/servers/{id:int}"
+
+@inject NavigationManager NavigationManager
+@* @rendermode InteractiveServer  *@
+
+<h2>Edit Server</h2>
+<br/>
+<br/>
+
+@* @if (server != null){
+    <p>
+        @server.Name 
+    </p>
+    <p>
+        @server.City
+    </p>
+    <p>
+        @(server.IsOnLine ? "Server is online" : "Server is offline")
+    </p>
+} *@
+
+@if(server != null){
+    @* each form needs a form name , model and an event attached to it to sent to the server *@
+    <EditForm Model="server" FormName="formServer" OnValidSubmit="Submit">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        <ValidationSummary></ValidationSummary>
+        <InputNumber @bind-Value="server.ServerId" hidden></InputNumber>
+        <div class="row mb-3">
+            <div class="col-2">
+                <label class="col-form-label">Name</label>
+            </div>
+            <div class="col-6">
+                <InputText @bind-Value="server.Name" class="form-control"></InputText>
+            </div>
+            <div class="col">
+                @* valid message will be next to the form *@
+                <ValidationMessage For="() => server.Name"></ValidationMessage> 
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-2">
+                <label class="col-form-label">City</label>
+            </div>
+            <div class="col-6">
+                <InputText @bind-Value="server.City" class="form-control"></InputText>
+            </div>
+                <div class="col">
+                <ValidationMessage For="() => server.City"></ValidationMessage>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-2">
+                <label class="col-form-label">Online</label>
+            </div>
+            <div class="col-6">
+                <InputCheckbox @bind-Value="server.IsOnLine" class="form-check-input"></InputCheckbox>
+            </div>
+        </div>
+        <br/>
+        <button type="submit" class="btn btn-primary">Update</button>
+        &nbsp;
+        <a href="/servers" class="btn btn-primary">Back to Servers</a>
+    </EditForm>
+}
+
+<br/>
+
+
+@code {
+    [Parameter] //route parameter
+    public int Id { get; set; }
+
+    //[SupplyParameterFromForm]
+    //if multiple forms, need to specify which form: SupplyParameterFromForm(FormName = "formServer"))
+   private Server? server {get; set;}
+
+   protected override void OnParametersSet() //lifecycle method that runs when parameters are set
+    {
+        server ??= ServersRepository.GetServerById(this.Id);
+    }
+
+    private void Submit(){
+        if(server != null){
+            ServersRepository.UpdateServer(server.ServerId, server);
+        }
+        NavigationManager.NavigateTo("/servers");
+    }
+
+    //protected override void OnInitialized()
+    //{
+        // Simulate fetching the server by ID
+        //server = ServersRepository.GetServerById(Id);
+        //if (server == null)
+        //{
+            // Handle case where server is not found
+            //server = new Server { Name = "Unknown", City = "Unknown" };
+        //}
+    //}
+}

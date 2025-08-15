@@ -1,0 +1,65 @@
+@page "/servers/add"
+
+@inject NavigationManager NavigationManager
+
+<h3>Add Server</h3>
+<br/>
+@if(server != null){
+    @* each form needs a form name , model and an event attached to it to sent to the server *@
+    <EditForm Model="server" FormName="formServer" OnValidSubmit="Submit">
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        <ValidationSummary></ValidationSummary>
+        
+        <div class="row mb-3">
+            <div class="col-2">
+                <label class="col-form-label">Name</label>
+            </div>
+            <div class="col-6">
+                <InputText @bind-Value="server.Name" class="form-control"></InputText>
+            </div>
+            <div class="col">
+                @* valid message will be next to the form *@
+                <ValidationMessage For="() => server.Name"></ValidationMessage> 
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-2">
+                <label class="col-form-label">City</label>
+            </div>
+            <div class="col-6">
+                <InputText @bind-Value="server.City" class="form-control"></InputText>
+            </div>
+                <div class="col">
+                <ValidationMessage For="() => server.City"></ValidationMessage>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-2">
+                <label class="col-form-label">Online</label>
+            </div>
+            <div class="col-6">
+                <InputCheckbox @bind-Value="server.IsOnLine" class="form-check-input"></InputCheckbox>
+            </div>
+        </div>
+        <br/>
+        <button type="submit" class="btn btn-primary">Save</button>
+        &nbsp;
+        <a href="/servers" class="btn btn-primary">Back to Servers</a>
+    </EditForm>
+}
+
+<br/>
+
+
+@code {
+    //[SupplyParameterFromForm]
+   private Server? server {get; set;} = new Server { IsOnLine = false };
+   public void Submit(){
+    if(server != null){
+        ServersRepository.AddServer(server);
+        NavigationManager.NavigateTo("/servers");
+    }
+   }
+}
